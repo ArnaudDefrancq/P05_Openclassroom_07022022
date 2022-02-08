@@ -1,21 +1,6 @@
 const items = document.getElementById("items");
 const numberOfArticle = 8;
 
-const couchData = () => {
-  fetch(" http://localhost:3000/api/products")
-    .then(function (res) {
-      if (res.ok) {
-        return res.json();
-      }
-    })
-    .then(function (value) {
-      console.log(value);
-    })
-    .catch(function (err) {
-      console.log("This is a err", err);
-    });
-};
-
 const createCard = () => {
   const link = document.createElement("a");
   items.appendChild(link);
@@ -38,3 +23,10 @@ const createCard = () => {
 for (let i = 0; i < numberOfArticle; i++) {
   createCard(i);
 }
+
+const couchData = () => {
+  fetch(" http://localhost:3000/api/products")
+    .then((response) => response.json())
+    .then((response2) => console.table(response2))
+    .catch((err) => console.log("Ceci est une erreur", err));
+};
