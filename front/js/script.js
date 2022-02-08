@@ -16,7 +16,7 @@ const couchData = () => {
     });
 };
 
-const createCard = (couch) => {
+const createCard = () => {
   const link = document.createElement("a");
   items.appendChild(link);
 
@@ -24,18 +24,14 @@ const createCard = (couch) => {
   link.appendChild(article);
 
   const img = document.createElement("img");
-  img.setAttribute("src", couch.imageUrl);
-  img.setAttribute("atl", couch.altTxt);
   article.appendChild(img);
 
   const title = document.createElement("h3");
   title.classList.add("productName");
-  title.innerText = couch.name;
   article.appendChild(title);
 
   const description = document.createElement("p");
   description.classList.add("productDescription");
-  description.innerText = couch.description;
   article.appendChild(description);
 };
 
