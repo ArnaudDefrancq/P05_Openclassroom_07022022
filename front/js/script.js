@@ -11,36 +11,9 @@ const couchData = async () => {
 
 couchData();
 
-// const createCard = async () => {
-//   await couchData();
+const createCard = async () => {
+  await couchData();
 
-//   console.log(array);
-
-//   const link = document.createElement("a");
-//   items.appendChild(link);
-
-//   const article = document.createElement("article");
-//   link.appendChild(article);
-
-//   const img = document.createElement("img");
-//   article.appendChild(img);
-
-//   const title = document.createElement("h3");
-//   title.classList.add("productName");
-//   title.innerText = array.forEach((test) => test.name);
-//   article.appendChild(title);
-
-//   const description = document.createElement("p");
-//   description.classList.add("productDescription");
-//   description.innerText = array[length].description;
-//   article.appendChild(description);
-// };
-
-// for (let i = 0; i < numberOfArticle; i++) {
-//   createCard(i);
-// }
-
-const createCard = () => {
   const link = document.createElement("a");
   items.appendChild(link);
 
@@ -52,6 +25,7 @@ const createCard = () => {
 
   const title = document.createElement("h3");
   title.classList.add("productName");
+  title.innerText = array[length].name;
   article.appendChild(title);
 
   const description = document.createElement("p");
