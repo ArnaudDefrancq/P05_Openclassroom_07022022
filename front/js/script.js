@@ -1,6 +1,6 @@
 const items = document.getElementById("items");
 
-const couchData = async () => {
+const fetchData = async () => {
   await fetch("http://localhost:3000/api/products")
     .then((response) => response.json())
     .then((data) => createAllCard(data))
@@ -9,6 +9,7 @@ const couchData = async () => {
 
 const createCard = ({ name, description, imageUrl, altTxt }) => {
   const linkNode = document.createElement("a");
+  linkNode.setAttribute("href", `./product.html`);
   items.appendChild(linkNode);
 
   const articleNode = document.createElement("article");
@@ -38,5 +39,5 @@ const createAllCard = (data) => {
 };
 
 window.addEventListener("DOMContentLoaded", async () => {
-  await couchData();
+  await fetchData();
 });
