@@ -1,10 +1,12 @@
-const titleNode = document.getElementById("title");
-const priceNode = document.getElementById("price");
-const descriptionNode = document.getElementById("description");
+let params = new URLSearchParams(document.location.search);
+console.log(params);
+let id = params.get("id");
+console.log(id);
 
 const fetchData = async () => {
-  await fetch("http://localhost:3000/api/products")
+  fetch(`http://localhost:3000/api/products/${id}`)
     .then((response) => response.json())
-    .then((data) => recepData(data))
-    .catch((err) => console.log("Ceci est une erreur", err));
+    .then((data) => console.log(data));
 };
+
+fetchData();
