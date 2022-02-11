@@ -7,9 +7,9 @@ const fetchData = async () => {
     .catch((err) => console.log("Ceci est une erreur", err));
 };
 
-const createCard = ({ name, description, imageUrl, altTxt }) => {
+const createCard = ({ name, description, imageUrl, altTxt, _id }) => {
   const linkNode = document.createElement("a");
-  linkNode.setAttribute("href", `./product.html`);
+  linkNode.setAttribute("href", `./product.html?id=${_id}`);
   items.appendChild(linkNode);
 
   const articleNode = document.createElement("article");
