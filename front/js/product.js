@@ -1,8 +1,10 @@
+// Sélection de l'ID du produit sélectionné par l'utilisateur
 let params = new URLSearchParams(document.location.search);
 console.log(params);
 let id = params.get("id");
 console.log(id);
 
+// Sélection du bon produit dans l'API
 const fetchData = async () => {
   fetch(`http://localhost:3000/api/products/${id}`)
     .then((response) => response.json())
@@ -10,28 +12,26 @@ const fetchData = async () => {
     .catch((err) => console.log("Ceci est une erreur", err));
 };
 
-fetchData();
-
+// Création de la carte du produit
 const titleNode = document.getElementById("title");
 const priceNode = document.getElementById("price");
 const descriptionNode = document.getElementById("description");
 const itemImgNode = document.getElementById("item__div");
 const colorsNode = document.getElementById("colors");
 
-const createItem = (data) => {
+const createItem = ({ imageUrl, altTxt, name, price, description, colors }) => {
   const itemImg = document.createElement("img");
-  itemImg.setAttribute("src", data.imageUrl);
-  itemImg.setAttribute("alt", data.altTxt);
+  itemImg.setAttribute("src", imageUrl);
+  itemImg.setAttribute("alt", altTxt);
   itemImgNode.appendChild(itemImg);
 
-  titleNode.innerText = data.name;
+  titleNode.innerText = name;
 
-  priceNode.innerText = data.price;
+  priceNode.innerText = price;
 
-  descriptionNode.innerText = data.description;
+  descriptionNode.innerText = description;
 
-  var array = data.colors;
-  console.log(array);
+  var array = colors;
 
   array.forEach((color) => {
     var option = document.createElement("option");
@@ -39,3 +39,28 @@ const createItem = (data) => {
     colorsNode.appendChild(option);
   });
 };
+
+// Pour que la fonction de l'API se lance au chargement de la page
+window.addEventListener("DOMContentLoaded", async () => {
+  await fetchData();
+});
+
+// Enregistrement du produit pour le récuperer pour le mettre dans le panier (localStorage)
+const addToCart = document.getElementById("addToCart");
+const quantity = document.getElementById("quantity");
+
+addToCart.addEventListener("click", function () {
+  console.log("test");
+  let item = {
+    name: titleNode.innerText,
+    price: priceNode.innerText,
+    option: colorsNode.value,
+    quantity: quantity.value,
+    priceAdd: quantity.value * priceNode.innerText,
+  };
+  console.log(item);
+
+  localStorage.setItem("produit", JSON.stringify(item));
+});
+
+let selectItem = localStorage;
