@@ -6,7 +6,7 @@ console.log(id);
 
 // Sélection du bon produit dans l'API
 const fetchData = async () => {
-  fetch(`http://localhost:3000/api/products/${id}`)
+  await fetch(`http://localhost:3000/api/products/${id}`)
     .then((response) => response.json())
     .then((data) => createItem(data))
     .catch((err) => console.log("Ceci est une erreur", err));
