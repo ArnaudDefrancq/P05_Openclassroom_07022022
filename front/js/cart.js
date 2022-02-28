@@ -1,35 +1,53 @@
-var array = JSON.parse(localStorage.getItem("produit"));
-// console.log(array);
+// récupérartion du localStorage
+const getLocalStorageProducts = () =>
+  JSON.parse(localStorage.getItem("produit"));
 
-const fetchData = async () => {
-  for await (let data of array) {
-    fetch(`http://localhost:3000/api/products/${data.id}`)
-      .then((response) => response.json())
-      .then((data2) => array.push(data2))
-      .catch((err) => console.log("Ceci est une erreur", err));
+// Je vais chercher les données en fonction de l'ID choisit par l'utilisateur
+const getProductsList = (localProducts) =>
+  localProducts.map(async (item) => {
+    try {
+      const fetchData = await fetch(
+        `http://localhost:3000/api/products/${item.id}`
+      );
+      return fetchData.json();
+    } catch (err) {
+      console.log("error", err);
+    }
+  });
+
+// Je vérifie que l'ID issu de la base de donnée correspond bien a l'ID sélectionné par l'utilisateur
+const getProductFromId = (productList, id) => {
+  return productList.find((product) => product._id === id);
+};
+
+// je génére la carte si la fonction getProductFromId est respecté avec comme paramètre localProduct = données issus du localStorage et productList = données issus de l'API.
+const generateCard = (localProduct, productsList) => {
+  // console.log(productsList);
+  // console.log(localProduct);
+  const product = getProductFromId(productsList, localProduct.id);
+  // console.log({ localProduct, product });
+  if (product) {
+    // j'affiche mon produit
   }
 };
 
-fetchData();
+// je génére les autres cartes en fonction de ce qu'il y a dans le panier
+const generateCards = () => {
+  const localProducts = getLocalStorageProducts();
+  const productsList = getProductsList(localProducts);
+  Promise.all(productsList).then((items) => {
+    localProducts.forEach((localProduct) => {
+      generateCard(localProduct, items);
+      // console.log(localProduct);
+      // console.log(items);
+    });
+    // Ici le calcul du prix total
+  });
+};
 
-console.log(array.length);
+generateCards();
 
-// array.forEach((data) => {
-//   console.log(data.option);
-// });
-
-// array.forEach((data) => {
-//   console.log(data.quantity);
-// });
-
-// array.forEach((data) => {
-//   console.log(data[3].name);
-// });
-// array.forEach((data) => {
-//   console.log(data.price);
-// });
-
-// array.forEach((data) => {
+// array2.forEach((data) => {
 //   const cartItem = document.querySelector("#cart__items");
 //   // console.log(cartItem);
 
@@ -61,7 +79,7 @@ console.log(array.length);
 //   division.appendChild(titleProd);
 
 //   const color = document.createElement("p");
-//   color.innerText = data.option;
+//   // color.innerText = data.option;
 //   division.appendChild(color);
 
 //   const price = document.createElement("p");
@@ -85,7 +103,7 @@ console.log(array.length);
 //   input.setAttribute("name", "itemQuantity");
 //   input.setAttribute("min", "1");
 //   input.setAttribute("max", "100");
-//   input.setAttribute("value", `${data.quantity}`);
+//   // input.setAttribute("value", `${data.quantity}`);
 //   input.classList.add("itemQuantity");
 //   otherDiv.appendChild(input);
 
