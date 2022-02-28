@@ -22,12 +22,13 @@ const getProductFromId = (productList, id) => {
 
 // je génére la carte si la fonction getProductFromId est respecté avec comme paramètre localProduct = données issus du localStorage et productList = données issus de l'API.
 const generateCard = (localProduct, productsList) => {
-  // console.log(productsList);
-  // console.log(localProduct);
+  console.log(productsList);
+  console.log(localProduct);
   const product = getProductFromId(productsList, localProduct.id);
-  // console.log({ localProduct, product });
+  console.log({ localProduct, product });
   if (product) {
     // j'affiche mon produit
+    card(localProduct, product);
   }
 };
 
@@ -47,72 +48,72 @@ const generateCards = () => {
 
 generateCards();
 
-// array2.forEach((data) => {
-//   const cartItem = document.querySelector("#cart__items");
-//   // console.log(cartItem);
+const card = (localProduct, product) => {
+  const cartItem = document.querySelector("#cart__items");
+  // console.log(cartItem);
 
-//   const articleNode = document.createElement("article");
-//   articleNode.classList.add("cart__item");
-//   articleNode.setAttribute("data-id", "{product-ID}");
-//   articleNode.setAttribute("data-color", "{product-color}");
-//   cartItem.appendChild(articleNode);
+  const articleNode = document.createElement("article");
+  articleNode.classList.add("cart__item");
+  articleNode.setAttribute("data-id", "{product-ID}");
+  articleNode.setAttribute("data-color", "{product-color}");
+  cartItem.appendChild(articleNode);
 
-//   const addDiv = document.createElement("div");
-//   addDiv.classList.add("cart__item__img");
-//   articleNode.appendChild(addDiv);
+  const addDiv = document.createElement("div");
+  addDiv.classList.add("cart__item__img");
+  articleNode.appendChild(addDiv);
 
-//   const addImg = document.createElement("img");
-//   addImg.setAttribute("src", data.imageUrl);
-//   addImg.setAttribute("alt", data.altTxt);
-//   addDiv.appendChild(addImg);
+  const addImg = document.createElement("img");
+  addImg.setAttribute("src", product.imageUrl);
+  addImg.setAttribute("alt", product.altTxt);
+  addDiv.appendChild(addImg);
 
-//   const newDiv = document.createElement("div");
-//   newDiv.classList.add("cart__item__content");
-//   articleNode.appendChild(newDiv);
+  const newDiv = document.createElement("div");
+  newDiv.classList.add("cart__item__content");
+  articleNode.appendChild(newDiv);
 
-//   const division = document.createElement("div");
-//   division.classList.add("cart__item__content__description");
-//   newDiv.appendChild(division);
+  const division = document.createElement("div");
+  division.classList.add("cart__item__content__description");
+  newDiv.appendChild(division);
 
-//   const titleProd = document.createElement("h2");
-//   titleProd.innerText = data.name;
-//   division.appendChild(titleProd);
+  const titleProd = document.createElement("h2");
+  titleProd.innerText = product.name;
+  division.appendChild(titleProd);
 
-//   const color = document.createElement("p");
-//   // color.innerText = data.option;
-//   division.appendChild(color);
+  const color = document.createElement("p");
+  color.innerText = localProduct.option;
+  division.appendChild(color);
 
-//   const price = document.createElement("p");
-//   price.innerText = data.price;
-//   division.appendChild(price);
+  const price = document.createElement("p");
+  price.innerText = product.price;
+  division.appendChild(price);
 
-//   const nextDiv = document.createElement("div");
-//   nextDiv.classList.add("cart__item__content__settings");
-//   articleNode.appendChild(nextDiv);
+  const nextDiv = document.createElement("div");
+  nextDiv.classList.add("cart__item__content__settings");
+  articleNode.appendChild(nextDiv);
 
-//   const otherDiv = document.createElement("div");
-//   otherDiv.classList.add("cart__item__content__settings__quantity");
-//   nextDiv.appendChild(otherDiv);
+  const otherDiv = document.createElement("div");
+  otherDiv.classList.add("cart__item__content__settings__quantity");
+  nextDiv.appendChild(otherDiv);
 
-//   const qte = document.createElement("p");
-//   qte.innerText = `Qté :`;
-//   otherDiv.appendChild(qte);
+  const qte = document.createElement("p");
+  qte.innerText = `Qté :`;
+  otherDiv.appendChild(qte);
 
-//   const input = document.createElement("input");
-//   input.setAttribute("type", "number");
-//   input.setAttribute("name", "itemQuantity");
-//   input.setAttribute("min", "1");
-//   input.setAttribute("max", "100");
-//   // input.setAttribute("value", `${data.quantity}`);
-//   input.classList.add("itemQuantity");
-//   otherDiv.appendChild(input);
+  const input = document.createElement("input");
+  input.setAttribute("type", "number");
+  input.setAttribute("name", "itemQuantity");
+  input.setAttribute("min", "1");
+  input.setAttribute("max", "100");
+  input.setAttribute("value", `${localProduct.quantity}`);
+  input.classList.add("itemQuantity");
+  otherDiv.appendChild(input);
 
-//   const lastDiv = document.createElement("div");
-//   lastDiv.classList.add("cart__item__content__settings__delete");
-//   nextDiv.appendChild(lastDiv);
+  const lastDiv = document.createElement("div");
+  lastDiv.classList.add("cart__item__content__settings__delete");
+  nextDiv.appendChild(lastDiv);
 
-//   const p = document.createElement("p");
-//   p.classList.add("deleteItem");
-//   p.innerText = "Supprimer";
-//   lastDiv.appendChild(p);
-// });
+  const p = document.createElement("p");
+  p.classList.add("deleteItem");
+  p.innerText = "Supprimer";
+  lastDiv.appendChild(p);
+};
