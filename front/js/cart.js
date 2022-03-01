@@ -2,6 +2,9 @@
 const getLocalStorageProducts = () =>
   JSON.parse(localStorage.getItem("produit"));
 
+// var arrayLocalStorage = getLocalStorageProducts();
+// console.log(arrayLocalStorage);
+
 // Je vais chercher les données en fonction de l'ID choisit par l'utilisateur
 const getProductsList = (localProducts) =>
   localProducts.map(async (item) => {
@@ -22,8 +25,8 @@ const getProductFromId = (productList, id) => {
 
 // je génére la carte si la fonction getProductFromId est respecté avec comme paramètre localProduct = données issus du localStorage et productList = données issus de l'API.
 const generateCard = (localProduct, productsList) => {
-  console.log(productsList);
-  console.log(localProduct);
+  // console.log(productsList);
+  // console.log(localProduct);
   const product = getProductFromId(productsList, localProduct.id);
   console.log({ localProduct, product });
   if (product) {
@@ -47,6 +50,10 @@ const generateCards = () => {
 };
 
 generateCards();
+
+const cartItem = document.querySelector("#cart__items");
+
+// Création de la carte avec comme paramètre localProduct = données issus du localStorage et product = données issus de l'API.
 
 const card = (localProduct, product) => {
   const cartItem = document.querySelector("#cart__items");
@@ -84,7 +91,7 @@ const card = (localProduct, product) => {
   division.appendChild(color);
 
   const price = document.createElement("p");
-  price.innerText = product.price;
+  price.innerText = `${product.price} €`;
   division.appendChild(price);
 
   const nextDiv = document.createElement("div");
@@ -116,4 +123,16 @@ const card = (localProduct, product) => {
   p.classList.add("deleteItem");
   p.innerText = "Supprimer";
   lastDiv.appendChild(p);
+
+  p.addEventListener("click", () => {
+    console.log("test");
+    const ID = `${(localProduct.id, product._id)}`;
+    // console.log(ID);
+    const arrayStorage = getLocalStorageProducts();
+    // console.log(arrayStorage);
+    const arrayTest = arrayStorage.filter((el) => el.id !== ID);
+    console.log(arrayTest);
+    localStorage.setItem("produit", JSON.stringify(arrayTest));
+    window.location.reload();
+  });
 };
