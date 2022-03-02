@@ -28,7 +28,7 @@ const generateCard = (localProduct, productsList) => {
   // console.log(productsList);
   // console.log(localProduct);
   const product = getProductFromId(productsList, localProduct.id);
-  console.log({ localProduct, product });
+  // console.log({ localProduct, product });
   if (product) {
     // j'affiche mon produit
     card(localProduct, product);
@@ -46,6 +46,31 @@ const generateCards = () => {
       // console.log(items);
     });
     // Ici le calcul du prix total
+    // Mettre dans une fonction
+    const totalQuantity = document.getElementById("totalQuantity");
+    var numberItem = [];
+    // console.log(localProducts);
+    localProducts.map((data) => {
+      numberItem.push(data.quantity);
+      return numberItem;
+    });
+    // console.log(numberItem);
+    var arrayQuantity = numberItem.map((i) => {
+      arrayQuantity = Number(i);
+      return arrayQuantity;
+    });
+    // console.log(arrayQuantity);
+    const sumNumberItem = arrayQuantity.reduce((sum, currentNote) => {
+      return (sum += currentNote);
+    });
+    // console.log(sumNumberItem);
+    totalQuantity.innerText = sumNumberItem;
+
+    //  Somme total du panier
+    const totalPrice = document.getElementById("totalPrice");
+    console.log(totalPrice);
+    console.log(localProducts);
+    console.log(items);
   });
 };
 
@@ -115,6 +140,24 @@ const card = (localProduct, product) => {
   input.classList.add("itemQuantity");
   otherDiv.appendChild(input);
 
+  input.addEventListener("input", (e) => {
+    const ID = localProduct.option;
+    console.log(ID);
+    // console.log(e.target.value);
+    const newQuantity = e.target.value;
+    // console.log(newQuantity);
+    const arrayStorage = getLocalStorageProducts();
+    // console.log(arrayStorage);
+    arrayStorage.forEach((data) => {
+      if (ID === data.option) {
+        data.quantity = newQuantity;
+      }
+    });
+    // console.log(arrayStorage);
+    localStorage.setItem("produit", JSON.stringify(arrayStorage));
+    window.location.reload();
+  });
+
   const lastDiv = document.createElement("div");
   lastDiv.classList.add("cart__item__content__settings__delete");
   nextDiv.appendChild(lastDiv);
@@ -126,12 +169,12 @@ const card = (localProduct, product) => {
 
   p.addEventListener("click", () => {
     console.log("test");
-    const ID = `${(localProduct.id, product._id)}`;
+    const ID = `${localProduct.option}`;
     // console.log(ID);
     const arrayStorage = getLocalStorageProducts();
     // console.log(arrayStorage);
-    const arrayTest = arrayStorage.filter((el) => el.id !== ID);
-    console.log(arrayTest);
+    const arrayTest = arrayStorage.filter((el) => el.option !== ID);
+    // console.log(arrayTest);
     localStorage.setItem("produit", JSON.stringify(arrayTest));
     window.location.reload();
   });
