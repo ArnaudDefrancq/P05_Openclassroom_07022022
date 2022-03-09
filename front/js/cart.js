@@ -25,10 +25,7 @@ const getProductFromId = (productList, id) => {
 
 // je génére la carte si la fonction getProductFromId est respecté avec comme paramètre localProduct = données issus du localStorage et productList = données issus de l'API.
 const generateCard = (localProduct, productsList) => {
-  // console.log(productsList);
-  // console.log(localProduct);
   const product = getProductFromId(productsList, localProduct.id);
-  // console.log({ localProduct, product });
   if (product) {
     // j'affiche mon produit
     card(localProduct, product);
@@ -42,35 +39,9 @@ const generateCards = () => {
   Promise.all(productsList).then((items) => {
     localProducts.forEach((localProduct) => {
       generateCard(localProduct, items);
-      // console.log(localProduct);
-      // console.log(items);
     });
     // Ici le calcul du prix total
-    // Mettre dans une fonction
-    const totalQuantity = document.getElementById("totalQuantity");
-    var numberItem = [];
-    // console.log(localProducts);
-    localProducts.map((data) => {
-      numberItem.push(data.quantity);
-      return numberItem;
-    });
-    // console.log(numberItem);
-    var arrayQuantity = numberItem.map((i) => {
-      arrayQuantity = Number(i);
-      return arrayQuantity;
-    });
-    // console.log(arrayQuantity);
-    const sumNumberItem = arrayQuantity.reduce((sum, currentNote) => {
-      return (sum += currentNote);
-    });
-    // console.log(sumNumberItem);
-    totalQuantity.innerText = sumNumberItem;
-
-    //  Somme total du panier
-    const totalPrice = document.getElementById("totalPrice");
-    console.log(totalPrice);
-    console.log(localProducts);
-    console.log(items);
+    totalArticle();
   });
 };
 
@@ -80,9 +51,24 @@ const cartItem = document.querySelector("#cart__items");
 
 // Création de la carte avec comme paramètre localProduct = données issus du localStorage et product = données issus de l'API.
 
+const getPrice = (localProduct, product) => {
+  const price = product.price;
+  const quantity = localProduct.quantity;
+  return quantity * price;
+};
+
+var arrayAllPrice = [];
+
 const card = (localProduct, product) => {
-  const cartItem = document.querySelector("#cart__items");
-  // console.log(cartItem);
+  const cardPrice = getPrice(localProduct, product);
+  // console.log(cardPrice);
+
+  arrayAllPrice.push(cardPrice);
+  const totalPrice = document.getElementById("totalPrice");
+  const sumPrice = arrayAllPrice.reduce((sum, price) => {
+    return (sum += price);
+  });
+  totalPrice.innerText = sumPrice;
 
   const articleNode = document.createElement("article");
   articleNode.classList.add("cart__item");
@@ -140,16 +126,17 @@ const card = (localProduct, product) => {
   input.classList.add("itemQuantity");
   otherDiv.appendChild(input);
 
+  // mettre dans fx
   input.addEventListener("input", (e) => {
-    const ID = localProduct.option;
-    console.log(ID);
+    const idColor = localProduct.option;
+    // console.log(idColor);
     // console.log(e.target.value);
     const newQuantity = e.target.value;
     // console.log(newQuantity);
     const arrayStorage = getLocalStorageProducts();
-    // console.log(arrayStorage);
+    // rajouter ID
     arrayStorage.forEach((data) => {
-      if (ID === data.option) {
+      if (idColor === data.option) {
         data.quantity = newQuantity;
       }
     });
@@ -162,20 +149,42 @@ const card = (localProduct, product) => {
   lastDiv.classList.add("cart__item__content__settings__delete");
   nextDiv.appendChild(lastDiv);
 
-  const p = document.createElement("p");
-  p.classList.add("deleteItem");
-  p.innerText = "Supprimer";
-  lastDiv.appendChild(p);
+  const deleteItems = document.createElement("p");
+  deleteItems.classList.add("deleteItem");
+  deleteItems.innerText = "Supprimer";
+  lastDiv.appendChild(deleteItems);
 
-  p.addEventListener("click", () => {
+  // mettre dans fx
+  deleteItems.addEventListener("click", () => {
     console.log("test");
-    const ID = `${localProduct.option}`;
+    const idColor = localProduct.option;
     // console.log(ID);
     const arrayStorage = getLocalStorageProducts();
     // console.log(arrayStorage);
-    const arrayTest = arrayStorage.filter((el) => el.option !== ID);
+    // ajouter ID
+    const arrayTest = arrayStorage.filter((el) => el.option !== idColor);
     // console.log(arrayTest);
     localStorage.setItem("produit", JSON.stringify(arrayTest));
     window.location.reload();
   });
+};
+
+console.log(arrayAllPrice);
+
+const totalArticle = () => {
+  const totalQuantity = document.getElementById("totalQuantity");
+  const localProducts = getLocalStorageProducts();
+  var numberItem = [];
+  // console.log(localProducts);
+  localProducts.map((data) => {
+    numberItem.push(Number(data.quantity));
+    return numberItem;
+  });
+  // console.log(numberItem);
+
+  const sumNumberItem = numberItem.reduce((sum, currentNote) => {
+    return (sum += currentNote);
+  });
+  // console.log(sumNumberItem);
+  totalQuantity.innerText = sumNumberItem;
 };
