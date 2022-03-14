@@ -68,7 +68,10 @@ const card = (localProduct, product) => {
   const sumPrice = arrayAllPrice.reduce((sum, price) => {
     return (sum += price);
   });
-  totalPrice.innerText = sumPrice;
+  totalPrice.innerText = new Intl.NumberFormat("fr-FR", {
+    style: "currency",
+    currency: "EUR",
+  }).format(sumPrice);
 
   const articleNode = document.createElement("article");
   articleNode.classList.add("cart__item");
@@ -102,7 +105,7 @@ const card = (localProduct, product) => {
   division.appendChild(color);
 
   const price = document.createElement("p");
-  price.innerText = `${product.price} €`;
+  price.innerText = product.price;
   division.appendChild(price);
 
   const nextDiv = document.createElement("div");
@@ -129,6 +132,7 @@ const card = (localProduct, product) => {
   // mettre dans fx
   input.addEventListener("input", (e) => {
     const idColor = localProduct.option;
+    const id = localProduct.id;
     // console.log(idColor);
     // console.log(e.target.value);
     const newQuantity = e.target.value;
@@ -136,7 +140,7 @@ const card = (localProduct, product) => {
     const arrayStorage = getLocalStorageProducts();
     // rajouter ID
     arrayStorage.forEach((data) => {
-      if (idColor === data.option) {
+      if (idColor === data.option && id === data.id) {
         data.quantity = newQuantity;
       }
     });
@@ -158,18 +162,17 @@ const card = (localProduct, product) => {
   deleteItems.addEventListener("click", () => {
     console.log("test");
     const idColor = localProduct.option;
+    const id = localProduct.id;
     // console.log(ID);
     const arrayStorage = getLocalStorageProducts();
     // console.log(arrayStorage);
     // ajouter ID
-    const arrayTest = arrayStorage.filter((el) => el.option !== idColor);
+    const arrayTest = arrayStorage.filter((el) => el.option !== idColor && id);
     // console.log(arrayTest);
     localStorage.setItem("produit", JSON.stringify(arrayTest));
     window.location.reload();
   });
 };
-
-console.log(arrayAllPrice);
 
 const totalArticle = () => {
   const totalQuantity = document.getElementById("totalQuantity");
@@ -187,4 +190,111 @@ const totalArticle = () => {
   });
   // console.log(sumNumberItem);
   totalQuantity.innerText = sumNumberItem;
+};
+
+// Vérification du formulaire
+
+const form = document.querySelector(".cart__order__form");
+
+const firstNameError = document.querySelector("#firstNameErrorMsg");
+const lastNameError = document.querySelector("#lastNameErrorMsg");
+const adressError = document.querySelector("#addressErrorMsg");
+const cityError = document.querySelector("#cityErrorMsg");
+const emailError = document.querySelector("#emailErrorMsg");
+
+const submit = document.getElementById("order");
+
+const inputName = document.getElementById("firstName");
+const inputLastName = document.getElementById("lastName");
+const inputAdress = document.getElementById("address");
+const inputCity = document.getElementById("city");
+const inputEmail = document.getElementById("email");
+
+// console.log(lastNameError);
+
+// Vérification du formulaire.
+// quand formulaire bon => envoyer les value dans un objet
+// Envoyer l'objet avec la methode post à api
+form.addEventListener("submit", (e) => {
+  e.preventDefault();
+  if (
+    validateString(inputName, firstNameError) &&
+    validateString(inputLastName, lastNameError) &&
+    validateString(inputCity, cityError) &&
+    validateEmail(inputEmail, emailError) &&
+    validateAdress(inputAdress, adressError)
+  ) {
+    // console.log(newOrder);
+    order();
+    // Appel api avec newOrder
+    // newOrder();
+    // console.log(newOrderData);
+  }
+  apiData();
+  // console.log(e);
+});
+
+const validateAdress = (node, nodeError) => {
+  if (/^[a-zA-Z0-9\s]{2,40}$/.test(inputAdress.value)) {
+    // console.log("Bien bon");
+    node.textContent = "";
+  } else {
+    nodeError.textContent = "Veuillez remplire correctement ce champ !";
+  }
+  return true;
+};
+
+const validateEmail = (node, nodeError) => {
+  if (/^[\w_.-]+@[\w-]+\.[a-z]{2,4}$/.test(inputEmail.value)) {
+    // console.log("tout est ok");
+    node.textContent = "";
+  } else {
+    nodeError.textContent = "Veuillez remplire correctement ce champ !";
+  }
+  return true;
+};
+
+const validateString = (node, nodeError) => {
+  if (/^[a-zA-Z\s]{3,20}$/.test(node.value)) {
+    // console.log("bon");
+    nodeError.textContent = "";
+    return true;
+  } else {
+    nodeError.textContent = "Veuillez remplire correctement ce champ !";
+    return false;
+  }
+};
+
+const order = () => {
+  const newOrder = {
+    contact: {
+      firstName: inputName.value,
+      lastName: inputLastName.value,
+      city: inputCity.value,
+      address: inputAdress.value,
+      email: inputEmail.value,
+    },
+    products: getLocalStorageProducts(),
+  };
+  // console.log(newOrder);
+  return newOrder;
+};
+
+const newOrder = () => {
+  const newOrderData = {
+    method: "POST",
+    body: JSON.stringify(order()),
+    headers: {
+      "Content-Type": "application/json",
+    },
+  };
+  console.log(newOrderData);
+  return newOrderData;
+};
+
+const apiData = () => {
+  fetch("http://localhost:3000/api/products/order", newOrder()).then(
+    (response) => response.json()
+  );
+  // .then((data) => console.log(data));
 };
