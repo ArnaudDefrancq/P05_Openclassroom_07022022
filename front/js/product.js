@@ -52,7 +52,7 @@ const quantity = document.getElementById("quantity");
 addToCart.addEventListener("click", function () {
   // console.log("test");
   const item = {
-    id: id,
+    _id: id,
     option: colorsNode.value,
     quantity: quantity.value,
   };

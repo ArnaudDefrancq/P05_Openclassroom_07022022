@@ -10,7 +10,7 @@ const getProductsList = (localProducts) =>
   localProducts.map(async (item) => {
     try {
       const fetchData = await fetch(
-        `http://localhost:3000/api/products/${item.id}`
+        `http://localhost:3000/api/products/${item._id}`
       );
       return fetchData.json();
     } catch (err) {
@@ -19,13 +19,13 @@ const getProductsList = (localProducts) =>
   });
 
 // Je vérifie que l'ID issu de la base de donnée correspond bien a l'ID sélectionné par l'utilisateur
-const getProductFromId = (productList, id) => {
-  return productList.find((product) => product._id === id);
+const getProductFromId = (productList, _id) => {
+  return productList.find((product) => product._id === _id);
 };
 
 // je génére la carte si la fonction getProductFromId est respecté avec comme paramètre localProduct = données issus du localStorage et productList = données issus de l'API.
 const generateCard = (localProduct, productsList) => {
-  const product = getProductFromId(productsList, localProduct.id);
+  const product = getProductFromId(productsList, localProduct._id);
   if (product) {
     // j'affiche mon produit
     card(localProduct, product);
@@ -198,7 +198,7 @@ const form = document.querySelector(".cart__order__form");
 
 const firstNameError = document.querySelector("#firstNameErrorMsg");
 const lastNameError = document.querySelector("#lastNameErrorMsg");
-const adressError = document.querySelector("#addressErrorMsg");
+const addressError = document.querySelector("#addressErrorMsg");
 const cityError = document.querySelector("#cityErrorMsg");
 const emailError = document.querySelector("#emailErrorMsg");
 
@@ -206,7 +206,7 @@ const submit = document.getElementById("order");
 
 const inputName = document.getElementById("firstName");
 const inputLastName = document.getElementById("lastName");
-const inputAdress = document.getElementById("address");
+const inputAddress = document.getElementById("address");
 const inputCity = document.getElementById("city");
 const inputEmail = document.getElementById("email");
 
@@ -215,43 +215,72 @@ const inputEmail = document.getElementById("email");
 // Vérification du formulaire.
 // quand formulaire bon => envoyer les value dans un objet
 // Envoyer l'objet avec la methode post à api
+
 form.addEventListener("submit", (e) => {
-  e.preventDefault();
   if (
     validateString(inputName, firstNameError) &&
     validateString(inputLastName, lastNameError) &&
     validateString(inputCity, cityError) &&
     validateEmail(inputEmail, emailError) &&
-    validateAdress(inputAdress, adressError)
+    validateAdress(inputAddress, addressError)
   ) {
-    // console.log(newOrder);
-    order();
-    // Appel api avec newOrder
-    // newOrder();
-    // console.log(newOrderData);
+    e.preventDefault();
+    var arrayItems = [];
+    arrayItems.push(getLocalStorageProducts());
+    console.log(typeof arrayItems);
+    console.log(arrayItems);
+    const order = {
+      contact: {
+        firstName: inputName.value,
+        lastName: inputLastName.value,
+        city: inputCity.value,
+        address: inputAddress.value,
+        email: inputEmail.value,
+      },
+      products: arrayItems,
+    };
+    console.log(order);
+    const options = {
+      method: "POST",
+      body: JSON.stringify(order),
+      headers: { "Content-Type": "application/json" },
+    };
+    console.log(options);
+    fetch("http://localhost:3000/api/products/order", options)
+      .then((response) => response.json())
+      .then((data) => {
+        // localStorage.clear();
+        console.log(data);
+        localStorage.setItem("orderId", data.orderId);
+        // document.location.href = "confirmation.html";
+      })
+      .catch((err) => console.log("Il y a un problème", err));
+  } else {
+    alert("Les champs ne sont pas bien remplit");
+    e.preventDefault();
   }
-  apiData();
-  // console.log(e);
 });
 
 const validateAdress = (node, nodeError) => {
-  if (/^[a-zA-Z0-9\s]{2,40}$/.test(inputAdress.value)) {
+  if (/^[a-zA-Z0-9\s]{2,40}$/.test(node.value)) {
     // console.log("Bien bon");
-    node.textContent = "";
+    nodeError.textContent = "";
+    return true;
   } else {
     nodeError.textContent = "Veuillez remplire correctement ce champ !";
+    return false;
   }
-  return true;
 };
 
 const validateEmail = (node, nodeError) => {
-  if (/^[\w_.-]+@[\w-]+\.[a-z]{2,4}$/.test(inputEmail.value)) {
+  if (/^[\w_.-]+@[\w-]+\.[a-z]{2,4}$/.test(node.value)) {
     // console.log("tout est ok");
-    node.textContent = "";
+    nodeError.textContent = "";
+    return true;
   } else {
     nodeError.textContent = "Veuillez remplire correctement ce champ !";
+    return false;
   }
-  return true;
 };
 
 const validateString = (node, nodeError) => {
@@ -263,38 +292,4 @@ const validateString = (node, nodeError) => {
     nodeError.textContent = "Veuillez remplire correctement ce champ !";
     return false;
   }
-};
-
-const order = () => {
-  const newOrder = {
-    contact: {
-      firstName: inputName.value,
-      lastName: inputLastName.value,
-      city: inputCity.value,
-      address: inputAdress.value,
-      email: inputEmail.value,
-    },
-    products: getLocalStorageProducts(),
-  };
-  // console.log(newOrder);
-  return newOrder;
-};
-
-const newOrder = () => {
-  const newOrderData = {
-    method: "POST",
-    body: JSON.stringify(order()),
-    headers: {
-      "Content-Type": "application/json",
-    },
-  };
-  console.log(newOrderData);
-  return newOrderData;
-};
-
-const apiData = () => {
-  fetch("http://localhost:3000/api/products/order", newOrder()).then(
-    (response) => response.json()
-  );
-  // .then((data) => console.log(data));
 };
