@@ -59,20 +59,20 @@ addToCart.addEventListener("click", function () {
   // console.log(item);
 
   // La key est en format JSON donc il faut passer par JSON.parse => objet JS
-  var itemSelect = JSON.parse(localStorage.getItem("produit"));
+  var itemSelect = JSON.parse(localStorage.getItem("products"));
   // console.log(itemSelect);
 
   // Si il y a déjà une key dans le local, on rajoute les new items dans le local
   if (itemSelect) {
     itemSelect.push(item);
-    localStorage.setItem("produit", JSON.stringify(itemSelect));
+    localStorage.setItem("products", JSON.stringify(itemSelect));
     console.log(itemSelect);
   }
   // Si il n'y a pas de key dans le local, on creait la key et on met les données dans le local
   else {
     itemSelect = [];
     itemSelect.push(item);
-    localStorage.setItem("produit", JSON.stringify(itemSelect));
+    localStorage.setItem("products", JSON.stringify(itemSelect));
 
     // console.log(itemSelect);
   }

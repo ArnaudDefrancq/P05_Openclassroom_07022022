@@ -1,6 +1,6 @@
 // récupérartion du localStorage
 const getLocalStorageProducts = () =>
-  JSON.parse(localStorage.getItem("produit"));
+  JSON.parse(localStorage.getItem("products"));
 
 // var arrayLocalStorage = getLocalStorageProducts();
 // console.log(arrayLocalStorage);
@@ -225,21 +225,20 @@ form.addEventListener("submit", (e) => {
     validateAdress(inputAddress, addressError)
   ) {
     e.preventDefault();
-    var arrayItems = [];
-    arrayItems.push(getLocalStorageProducts());
-    console.log(typeof arrayItems);
-    console.log(arrayItems);
+
+    const products = getLocalStorageProducts().map(({ _id }) => _id);
     const order = {
       contact: {
         firstName: inputName.value,
         lastName: inputLastName.value,
-        city: inputCity.value,
         address: inputAddress.value,
+        city: inputCity.value,
         email: inputEmail.value,
       },
-      products: arrayItems,
+      products,
     };
     console.log(order);
+
     const options = {
       method: "POST",
       body: JSON.stringify(order),
@@ -249,10 +248,8 @@ form.addEventListener("submit", (e) => {
     fetch("http://localhost:3000/api/products/order", options)
       .then((response) => response.json())
       .then((data) => {
-        // localStorage.clear();
-        console.log(data);
         localStorage.setItem("orderId", data.orderId);
-        // document.location.href = "confirmation.html";
+        document.location.href = "confirmation.html";
       })
       .catch((err) => console.log("Il y a un problème", err));
   } else {
