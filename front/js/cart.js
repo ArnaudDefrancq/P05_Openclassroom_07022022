@@ -2,9 +2,6 @@
 const getLocalStorageProducts = () =>
   JSON.parse(localStorage.getItem("products"));
 
-// var arrayLocalStorage = getLocalStorageProducts();
-// console.log(arrayLocalStorage);
-
 // Je vais chercher les données en fonction de l'ID choisit par l'utilisateur
 const getProductsList = (localProducts) =>
   localProducts.map(async (item) => {
@@ -47,27 +44,28 @@ const generateCards = () => {
 
 generateCards();
 
+// Création de la carte avec comme paramètre localProduct = données issus du localStorage et product = données issus de l'API.
 const cartItem = document.querySelector("#cart__items");
 
-// Création de la carte avec comme paramètre localProduct = données issus du localStorage et product = données issus de l'API.
-
+// Calcul du prix en fonction de la quantitée
 const getPrice = (localProduct, product) => {
   const price = product.price;
   const quantity = localProduct.quantity;
   return quantity * price;
 };
 
-var arrayAllPrice = [];
+var arraySumPrice = [];
 
+// Création des cartes en fonction des articles
 const card = (localProduct, product) => {
+  // Calcul du prix
   const cardPrice = getPrice(localProduct, product);
-  // console.log(cardPrice);
-
-  arrayAllPrice.push(cardPrice);
+  arraySumPrice.push(cardPrice);
   const totalPrice = document.getElementById("totalPrice");
-  const sumPrice = arrayAllPrice.reduce((sum, price) => {
+  const sumPrice = arraySumPrice.reduce((sum, price) => {
     return (sum += price);
   });
+
   totalPrice.innerText = new Intl.NumberFormat("fr-FR", {
     style: "currency",
     currency: "EUR",
@@ -79,97 +77,87 @@ const card = (localProduct, product) => {
   articleNode.setAttribute("data-color", "{product-color}");
   cartItem.appendChild(articleNode);
 
-  const addDiv = document.createElement("div");
-  addDiv.classList.add("cart__item__img");
-  articleNode.appendChild(addDiv);
+  const divImg = document.createElement("div");
+  divImg.classList.add("cart__item__img");
+  articleNode.appendChild(divImg);
 
   const addImg = document.createElement("img");
   addImg.setAttribute("src", product.imageUrl);
   addImg.setAttribute("alt", product.altTxt);
-  addDiv.appendChild(addImg);
+  divImg.appendChild(addImg);
 
-  const newDiv = document.createElement("div");
-  newDiv.classList.add("cart__item__content");
-  articleNode.appendChild(newDiv);
+  const divDescription = document.createElement("div");
+  divDescription.classList.add("cart__item__content");
+  articleNode.appendChild(divDescription);
 
-  const division = document.createElement("div");
-  division.classList.add("cart__item__content__description");
-  newDiv.appendChild(division);
+  const divContentDescription = document.createElement("div");
+  divContentDescription.classList.add("cart__item__content__description");
+  divDescription.appendChild(divContentDescription);
 
-  const titleProd = document.createElement("h2");
-  titleProd.innerText = product.name;
-  division.appendChild(titleProd);
+  const titleProduct = document.createElement("h2");
+  titleProduct.innerText = product.name;
+  divContentDescription.appendChild(titleProduct);
 
-  const color = document.createElement("p");
-  color.innerText = localProduct.option;
-  division.appendChild(color);
+  const colorProduct = document.createElement("p");
+  colorProduct.innerText = localProduct.option;
+  divContentDescription.appendChild(colorProduct);
 
-  const price = document.createElement("p");
-  price.innerText = product.price;
-  division.appendChild(price);
+  const priceProduct = document.createElement("p");
+  priceProduct.innerText = `${product.price} €`;
+  divContentDescription.appendChild(priceProduct);
 
-  const nextDiv = document.createElement("div");
-  nextDiv.classList.add("cart__item__content__settings");
-  articleNode.appendChild(nextDiv);
+  const divSettings = document.createElement("div");
+  divSettings.classList.add("cart__item__content__settings");
+  articleNode.appendChild(divSettings);
 
-  const otherDiv = document.createElement("div");
-  otherDiv.classList.add("cart__item__content__settings__quantity");
-  nextDiv.appendChild(otherDiv);
+  const divQuantity = document.createElement("div");
+  divQuantity.classList.add("cart__item__content__settings__quantity");
+  divSettings.appendChild(divQuantity);
 
   const qte = document.createElement("p");
   qte.innerText = `Qté :`;
-  otherDiv.appendChild(qte);
+  divSettings.appendChild(qte);
 
-  const input = document.createElement("input");
-  input.setAttribute("type", "number");
-  input.setAttribute("name", "itemQuantity");
-  input.setAttribute("min", "1");
-  input.setAttribute("max", "100");
-  input.setAttribute("value", `${localProduct.quantity}`);
-  input.classList.add("itemQuantity");
-  otherDiv.appendChild(input);
+  const inputQuantity = document.createElement("input");
+  inputQuantity.setAttribute("type", "number");
+  inputQuantity.setAttribute("name", "itemQuantity");
+  inputQuantity.setAttribute("min", "1");
+  inputQuantity.setAttribute("max", "100");
+  inputQuantity.setAttribute("value", `${localProduct.quantity}`);
+  inputQuantity.classList.add("itemQuantity");
+  divSettings.appendChild(inputQuantity);
 
-  // mettre dans fx
-  input.addEventListener("input", (e) => {
+  // fonction qui permet d'augmenter ou de diminuer la quantitée d'un article
+  inputQuantity.addEventListener("input", (e) => {
     const idColor = localProduct.option;
-    const id = localProduct.id;
-    // console.log(idColor);
-    // console.log(e.target.value);
+    const id = localProduct._id;
     const newQuantity = e.target.value;
-    // console.log(newQuantity);
     const arrayStorage = getLocalStorageProducts();
-    // rajouter ID
     arrayStorage.forEach((data) => {
-      if (idColor === data.option && id === data.id) {
+      if (idColor === data.option && id === data._id) {
         data.quantity = newQuantity;
       }
     });
-    // console.log(arrayStorage);
-    localStorage.setItem("produit", JSON.stringify(arrayStorage));
+    localStorage.setItem("products", JSON.stringify(arrayStorage));
     window.location.reload();
   });
 
-  const lastDiv = document.createElement("div");
-  lastDiv.classList.add("cart__item__content__settings__delete");
-  nextDiv.appendChild(lastDiv);
+  const divDelete = document.createElement("div");
+  divDelete.classList.add("cart__item__content__settings__delete");
+  divSettings.appendChild(divDelete);
 
   const deleteItems = document.createElement("p");
   deleteItems.classList.add("deleteItem");
   deleteItems.innerText = "Supprimer";
-  lastDiv.appendChild(deleteItems);
+  divDelete.appendChild(deleteItems);
 
-  // mettre dans fx
+  // fonction qui permet de supprimer un article du parnier
   deleteItems.addEventListener("click", () => {
-    console.log("test");
     const idColor = localProduct.option;
-    const id = localProduct.id;
-    // console.log(ID);
+    const id = localProduct._id;
     const arrayStorage = getLocalStorageProducts();
-    // console.log(arrayStorage);
-    // ajouter ID
     const arrayTest = arrayStorage.filter((el) => el.option !== idColor && id);
-    // console.log(arrayTest);
-    localStorage.setItem("produit", JSON.stringify(arrayTest));
+    localStorage.setItem("products", JSON.stringify(arrayTest));
     window.location.reload();
   });
 };
@@ -210,8 +198,6 @@ const inputAddress = document.getElementById("address");
 const inputCity = document.getElementById("city");
 const inputEmail = document.getElementById("email");
 
-// console.log(lastNameError);
-
 // Vérification du formulaire.
 // quand formulaire bon => envoyer les value dans un objet
 // Envoyer l'objet avec la methode post à api
@@ -224,8 +210,6 @@ form.addEventListener("submit", (e) => {
     validateEmail(inputEmail, emailError) &&
     validateAdress(inputAddress, addressError)
   ) {
-    e.preventDefault();
-
     const products = getLocalStorageProducts().map(({ _id }) => _id);
     const order = {
       contact: {
@@ -237,14 +221,13 @@ form.addEventListener("submit", (e) => {
       },
       products,
     };
-    console.log(order);
 
     const options = {
       method: "POST",
       body: JSON.stringify(order),
       headers: { "Content-Type": "application/json" },
     };
-    console.log(options);
+
     fetch("http://localhost:3000/api/products/order", options)
       .then((response) => response.json())
       .then((data) => {
@@ -258,6 +241,7 @@ form.addEventListener("submit", (e) => {
   }
 });
 
+// fonction de vérification des input
 const validateAdress = (node, nodeError) => {
   if (/^[a-zA-Z0-9\s]{2,40}$/.test(node.value)) {
     // console.log("Bien bon");
