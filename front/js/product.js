@@ -52,34 +52,52 @@ addToCart.addEventListener("click", function () {
   const item = {
     _id: id,
     option: colorsNode.value,
-    quantity: quantity.value,
+    quantity: Number(quantity.value),
   };
+
   // si l'utilisateur ne sélectionne pas de couleur
   if (colorsNode.value == "") {
     alert("Veuillez choisir une couleur");
+    return;
   }
-  // Si l'utilisateur ne sélectionne pas de quantité
-  else if (quantity.value == "0") {
-    alert("Veuillez choisir une quantitée");
-  }
-  // Si les 2 conditions sont remplits alors j'envoie le produit dans le local storage
-  else {
-    // La key est en format JSON donc il faut passer par JSON.parse => objet JS
-    var itemSelect = JSON.parse(localStorage.getItem("products"));
 
-    // Si il y a déjà une key dans le local, on rajoute les new items dans le local
-    if (itemSelect) {
+  // Si l'utilisateur ne sélectionne pas de quantité
+  if (quantity.value == "0") {
+    alert("Veuillez choisir une quantitée");
+    return;
+  }
+
+  // Si les 2 conditions sont remplits alors j'envoie le produit dans le local storage
+
+  // La key est en format JSON donc il faut passer par JSON.parse => objet JS
+  var itemSelect = JSON.parse(localStorage.getItem("products"));
+
+  // Si il y a déjà une key dans le local, on rajoute les new items dans le local
+  if (itemSelect) {
+    const existingItemIndex = itemSelect.findIndex(
+      ({ _id }) => item._id === _id
+    );
+    console.log({ existingItemIndex });
+
+    // Si il y a déjà ce produit dans mon panier, je ne fais qu'augmenter la quantité
+    if (existingItemIndex !== undefined) {
+      itemSelect[existingItemIndex] = {
+        ...item,
+        quantity: itemSelect[existingItemIndex].quantity + item.quantity,
+      };
+    } else {
+      // Sinon je l'ajoute à mon panier
       itemSelect.push(item);
-      localStorage.setItem("products", JSON.stringify(itemSelect));
-      console.log(itemSelect);
-      alert("Votre article a bien été ajouté au panier");
     }
+
+    localStorage.setItem("products", JSON.stringify(itemSelect));
+    console.log(itemSelect);
+    alert("Votre article a bien été ajouté au panier");
+  } else {
     // Si il n'y a pas de key dans le local, on creait la key et on met les données dans le local
-    else {
-      itemSelect = [];
-      itemSelect.push(item);
-      localStorage.setItem("products", JSON.stringify(itemSelect));
-      alert("Votre article a bien été ajouté au panier");
-    }
+    itemSelect = [];
+    itemSelect.push(item);
+    localStorage.setItem("products", JSON.stringify(itemSelect));
+    alert("Votre article a bien été ajouté au panier");
   }
 });
