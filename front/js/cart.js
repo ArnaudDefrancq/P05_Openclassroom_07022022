@@ -37,7 +37,7 @@ const generateCards = () => {
     localProducts.forEach((localProduct) => {
       generateCard(localProduct, items);
     });
-    // Ici le calcul du prix total
+    // Ici le calcul le nombre total d'article
     totalArticle();
   });
 };
@@ -175,7 +175,7 @@ const totalArticle = () => {
 
   const sumNumberItem = numberItem.reduce((sum, currentNote) => {
     return (sum += currentNote);
-  });
+  }, 0);
   // console.log(sumNumberItem);
   totalQuantity.innerText = sumNumberItem;
 };
@@ -231,8 +231,10 @@ form.addEventListener("submit", (e) => {
     fetch("http://localhost:3000/api/products/order", options)
       .then((response) => response.json())
       .then((data) => {
-        localStorage.setItem("orderId", data.orderId);
-        document.location.href = "confirmation.html";
+        if (data) {
+          localStorage.setItem("orderId", data.orderId);
+          document.location.href = "confirmation.html";
+        }
       })
       .catch((err) => console.log("Il y a un problème", err));
   } else {
@@ -244,7 +246,6 @@ form.addEventListener("submit", (e) => {
 // fonction de vérification des input
 const validateAdress = (node, nodeError) => {
   if (/^[a-zA-Z0-9\s]{2,40}$/.test(node.value)) {
-    // console.log("Bien bon");
     nodeError.textContent = "";
     return true;
   } else {
@@ -255,7 +256,6 @@ const validateAdress = (node, nodeError) => {
 
 const validateEmail = (node, nodeError) => {
   if (/^[\w_.-]+@[\w-]+\.[a-z]{2,4}$/.test(node.value)) {
-    // console.log("tout est ok");
     nodeError.textContent = "";
     return true;
   } else {
@@ -266,7 +266,6 @@ const validateEmail = (node, nodeError) => {
 
 const validateString = (node, nodeError) => {
   if (/^[a-zA-Z\s]{3,20}$/.test(node.value)) {
-    // console.log("bon");
     nodeError.textContent = "";
     return true;
   } else {
