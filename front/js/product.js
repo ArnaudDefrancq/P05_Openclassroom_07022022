@@ -62,7 +62,7 @@ addToCart.addEventListener("click", function () {
   }
 
   // Si l'utilisateur ne sélectionne pas de quantité
-  if (quantity.value == "0") {
+  if (quantity.value == 0) {
     alert("Veuillez choisir une quantitée");
     return;
   }
@@ -77,7 +77,6 @@ addToCart.addEventListener("click", function () {
     const existingItemIndex = itemSelect.findIndex(
       ({ _id }) => item._id === _id
     );
-    console.log({ existingItemIndex });
 
     // Si il y a déjà ce produit dans mon panier, je ne fais qu'augmenter la quantité
     if (existingItemIndex !== undefined) {
