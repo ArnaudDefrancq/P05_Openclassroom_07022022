@@ -185,6 +185,10 @@ if (getLocalStorageProducts() === null) {
     }, 0);
 
     totalQuantity.innerText = sumNumberItem;
+    if (sumNumberItem === 0) {
+      const empty = document.getElementById("cart__items");
+      empty.innerText = "Votre panier est vide";
+    }
   };
 }
 
