@@ -165,18 +165,15 @@ const card = (localProduct, product) => {
 const totalArticle = () => {
   const totalQuantity = document.getElementById("totalQuantity");
   const localProducts = getLocalStorageProducts();
-  var numberItem = [];
-  // console.log(localProducts);
+  var numberItems = [];
   localProducts.map((data) => {
-    numberItem.push(Number(data.quantity));
-    return numberItem;
+    numberItems.push(Number(data.quantity));
+    return numberItems;
   });
-  // console.log(numberItem);
-
-  const sumNumberItem = numberItem.reduce((sum, currentNote) => {
+  const sumNumberItem = numberItems.reduce((sum, currentNote) => {
     return (sum += currentNote);
   }, 0);
-  // console.log(sumNumberItem);
+
   totalQuantity.innerText = sumNumberItem;
 };
 
