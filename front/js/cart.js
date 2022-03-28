@@ -160,16 +160,16 @@ if (getLocalStorageProducts() === null) {
     divDelete.appendChild(deleteItems);
 
     // fonction qui permet de supprimer un article du parnier
-    deleteItems.addEventListener("click", () => {
-      const idColor = localProduct.option;
-      const id = localProduct._id;
-      const arrayStorage = getLocalStorageProducts();
-      const arrayTest = arrayStorage.filter(
-        (el) => el.option !== idColor && id
-      );
-      localStorage.setItem("products", JSON.stringify(arrayTest));
-      window.location.reload();
-    });
+    deleteItems.addEventListener("click", deleteItemsFunction);
+  };
+
+  const deleteItemsFunction = (localProduct) => {
+    const idColor = localProduct.option;
+    const id = localProduct._id;
+    const arrayStorage = getLocalStorageProducts();
+    const arrayTest = arrayStorage.filter((el) => el.option !== idColor && id);
+    localStorage.setItem("products", JSON.stringify(arrayTest));
+    window.location.reload();
   };
 
   const totalArticle = () => {
