@@ -218,6 +218,7 @@ const inputEmail = document.getElementById("email");
 form.addEventListener("submit", (e) => {
   if (getLocalStorageProducts() === null) {
     alert("Votre panier est vide");
+    return;
   }
   if (
     validateString(inputName, firstNameError) &&
