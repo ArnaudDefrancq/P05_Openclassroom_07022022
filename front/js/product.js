@@ -8,7 +8,10 @@ const fetchData = async () => {
   await fetch(`http://localhost:3000/api/products/${id}`)
     .then((response) => response.json())
     .then((data) => createItem(data))
-    .catch((err) => console.log("Ceci est une erreur", err));
+    .catch((err) => {
+      console.log("Ceci est une erreur", err);
+      alert(`L'article est introuvable`);
+    });
 };
 
 // Création de la carte du produit
