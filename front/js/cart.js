@@ -188,6 +188,7 @@ if (getLocalStorageProducts() === null) {
     if (sumNumberItem === 0) {
       const empty = document.getElementById("cart__items");
       empty.innerText = "Votre panier est vide";
+      localStorage.clear();
     }
   };
 }
@@ -215,6 +216,9 @@ const inputEmail = document.getElementById("email");
 // Envoyer l'objet avec la methode post à api
 
 form.addEventListener("submit", (e) => {
+  if (getLocalStorageProducts() === null) {
+    alert("Votre panier est vide");
+  }
   if (
     validateString(inputName, firstNameError) &&
     validateString(inputLastName, lastNameError) &&
