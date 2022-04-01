@@ -81,9 +81,11 @@ addToCart.addEventListener("click", function () {
       ({ _id }) => item._id === _id
     );
 
+    const sameOption = itemSelect.find(({ option }) => item.option === option);
     // Si il y a déjà ce produit dans mon panier, je ne fais qu'augmenter la quantité
-    if (existingItemIndex !== undefined) {
+    if (existingItemIndex !== undefined && sameOption) {
       itemSelect[existingItemIndex] = {
+        // sa revient à injecter le contenu de l'objet item
         ...item,
         quantity: itemSelect[existingItemIndex].quantity + item.quantity,
       };

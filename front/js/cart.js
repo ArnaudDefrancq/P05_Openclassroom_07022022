@@ -137,17 +137,7 @@ if (getLocalStorageProducts() === null) {
 
     // fonction qui permet d'augmenter ou de diminuer la quantitée d'un article
     inputQuantity.addEventListener("input", (e) => {
-      const idColor = localProduct.option;
-      const id = localProduct._id;
-      const newQuantity = e.target.value;
-      const arrayStorage = getLocalStorageProducts();
-      arrayStorage.forEach((data) => {
-        if (idColor === data.option && id === data._id) {
-          data.quantity = newQuantity;
-        }
-      });
-      localStorage.setItem("products", JSON.stringify(arrayStorage));
-      window.location.reload();
+      modifyQuantity(localProduct, e.target.value);
     });
 
     const divDelete = document.createElement("div");
@@ -160,15 +150,29 @@ if (getLocalStorageProducts() === null) {
     divDelete.appendChild(deleteItems);
 
     // fonction qui permet de supprimer un article du parnier
-    deleteItems.addEventListener("click", deleteItemsFunction);
+    deleteItems.addEventListener("click", () => {
+      const idColor = localProduct.option;
+      const id = localProduct._id;
+      const arrayStorage = getLocalStorageProducts();
+      const arrayTest = arrayStorage.filter(
+        (el) => el.option !== idColor && id
+      );
+      localStorage.setItem("products", JSON.stringify(arrayTest));
+      window.location.reload();
+    });
   };
 
-  const deleteItemsFunction = (localProduct) => {
+  const modifyQuantity = (localProduct, newValue) => {
     const idColor = localProduct.option;
     const id = localProduct._id;
+    const newQuantity = newValue;
     const arrayStorage = getLocalStorageProducts();
-    const arrayTest = arrayStorage.filter((el) => el.option !== idColor && id);
-    localStorage.setItem("products", JSON.stringify(arrayTest));
+    arrayStorage.forEach((data) => {
+      if (idColor === data.option && id === data._id) {
+        data.quantity = newQuantity;
+      }
+    });
+    localStorage.setItem("products", JSON.stringify(arrayStorage));
     window.location.reload();
   };
 
